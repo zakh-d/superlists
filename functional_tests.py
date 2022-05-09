@@ -5,10 +5,10 @@ import time
 
 
 class NewVisitorTest(unittest.TestCase):
-    
+
     def setUp(self):
         self.browser = webdriver.Firefox()
-    
+
     def tearDown(self):
         self.browser.quit()
 
@@ -22,7 +22,7 @@ class NewVisitorTest(unittest.TestCase):
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('To-Do', header_text)
 
-        # She is invited to enter a to-do item 
+        # She is invited to enter a to-do item
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
@@ -39,7 +39,7 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
-            any(row.text == '1: Do ironing' for row in rows)        
+            any(row.text == '1: Do ironing' for row in rows)
         )
         # There is still textbox inviting her to type
         # She types 'Do homework'
@@ -47,13 +47,13 @@ class NewVisitorTest(unittest.TestCase):
 
         # After she press enter page reloads and both items are shown
 
-        # Jane wonders wheather site will remember her list. 
+        # Jane wonders wheather site will remember her list.
         # She sees that site has generated a unique URL for her
 
         # She visites that URL and sees her to-do list
 
         # Satisfied she goes sleep
 
+
 if __name__ == '__main__':
     unittest.main(warnings='ignore')
-
