@@ -38,21 +38,27 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: Do ironing' for row in rows),
-            'New to-do item did not appear in the table'
-        )
+        self.assertIn('1: Do ironing', [row.text for row in rows])
+
         # There is still textbox inviting her to type
         # She types 'Do homework'
-        self.fail('Finish tests')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Do homework')
+        inputbox.send_keys(Keys.ENTER)
 
+        time.sleep(1)
         # After she press enter page reloads and both items are shown
+
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Do ironing', [row.text for row in rows])
+        self.assertIn('2: Do homework', [row.text for row in rows])
 
         # Jane wonders wheather site will remember her list.
         # She sees that site has generated a unique URL for her
+        self.fail('Finish tests')
 
         # She visites that URL and sees her to-do list
-
         # Satisfied she goes sleep
 
 
