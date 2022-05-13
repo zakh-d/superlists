@@ -12,6 +12,11 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows])
+
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Jane heart about a cool new website to-do app.
         # So she goes to homepage to check it
@@ -31,28 +36,23 @@ class NewVisitorTest(unittest.TestCase):
 
         # She types 'Do ironing'
         inputbox.send_keys('Do ironing')
-
-        # Then after she pressed enter the page refreshes and new item appears at it
         inputbox.send_keys(Keys.ENTER)
+        
         time.sleep(1)
 
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: Do ironing', [row.text for row in rows])
+        # Then after she pressed enter the page refreshes and new item appears at it
+        self.check_for_row_in_list_table('1: Do ironing')
 
         # There is still textbox inviting her to type
         # She types 'Do homework'
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Do homework')
         inputbox.send_keys(Keys.ENTER)
-
         time.sleep(1)
-        # After she press enter page reloads and both items are shown
 
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: Do ironing', [row.text for row in rows])
-        self.assertIn('2: Do homework', [row.text for row in rows])
+        # After she press enter page reloads and both items are shown
+        
+        self.check_for_row_in_list_table('2: Do homework')
 
         # Jane wonders wheather site will remember her list.
         # She sees that site has generated a unique URL for her
