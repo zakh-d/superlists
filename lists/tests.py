@@ -1,7 +1,34 @@
 from cgitb import text
 from django.test import TestCase
 from django.urls import reverse
-from lists.models import Item
+from lists.models import Item, List
+
+
+class ItemAndListModelsTests(TestCase):
+
+    def test_saving_and_retrieving_items(self):
+        
+        list_ = List()
+        list_.save()
+
+        first_item = Item()
+        first_item.text = 'First item'
+        first_item.list = list_
+        first_item.save()
+
+        second_item = Item(text='Second item')
+        second_item.list = list_
+        second_item.save()
+
+        saved_list = List.objects.last()
+        self.assertEqual(saved_list, list_)
+
+        items = Item.objects.all()
+
+        self.assertEqual(items[0].text, 'First item')
+        self.assertEqual(items[0].list, saved_list)
+        self.assertEqual(items[1].text, 'Second item')
+        self.assertEqual(items[1].list, saved_list)
 
 
 class HomePageTests(TestCase):
@@ -15,22 +42,6 @@ class HomePageTests(TestCase):
         self.assertEqual(Item.objects.count(), 0)
 
 
-class ItemModelTests(TestCase):
-
-    def test_saving_and_retrieving_items(self):
-        first_item = Item()
-        first_item.text = 'First item'
-        first_item.save()
-
-        second_item = Item(text='Second item')
-        second_item.save()
-
-        items = Item.objects.all()
-
-        self.assertEqual(items[0].text, 'First item')
-        self.assertEqual(items[1].text, 'Second item')
-
-
 class ListViewTest(TestCase):
 
     def test_uses_list_template(self):
@@ -38,8 +49,10 @@ class ListViewTest(TestCase):
         self.assertTemplateUsed(response, 'list.html')
 
     def test_display_all_items(self):
-        item1 = Item.objects.create(text='item1')
-        item2 = Item.objects.create(text='item2')
+        
+        list_ = List.objects.create()
+        Item.objects.create(text='item1', list=list_)
+        Item.objects.create(text='item2', list=list_)
 
         response = self.client.get('/lists/the-only-list-in-the-world/')
         self.assertContains(response, 'item1')
