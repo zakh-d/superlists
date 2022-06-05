@@ -1,6 +1,7 @@
 import time
 from django.test import LiveServerTestCase
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
 
@@ -20,7 +21,7 @@ class NewVisitorTest(LiveServerTestCase):
         while True:
             try:
                 table = self.browser.find_element_by_id('id_list_table')
-                rows = table.find_elements_by_tag_name('tr')
+                rows = table.find_elements(by=By.TAG_NAME, value='tr')
                 self.assertIn(row_text, [row.text for row in rows])
                 return
             except (AssertionError, WebDriverException) as error:
@@ -35,7 +36,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # She notices that title and headline says to-do
         self.assertIn('To-Do', self.browser.title)
-        header_text = self.browser.find_element_by_tag_name('h1').text
+        header_text = self.browser.find_element(by=By.TAG_NAME, value='h1').text
         self.assertIn('To-Do', header_text)
 
         # She is invited to enter a to-do item
@@ -86,7 +87,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Francis visits homepage and there is no sign of Jane's list
         self.browser.get(self.live_server_url)
-        page_text = self.browser.find_element_by_tag_name('body').text
+        page_text = self.browser.find_element(by=By.TAG_NAME, value='body').text
         self.assertNotIn('Buy peacock feathers!', page_text)
         self.assertNotIn('Do homework', page_text)
         # Francis start a new list by entering a new item
@@ -101,6 +102,6 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertRegex(francis_list_url, '/lists/.+')
 
         # Again there is no trace of Jane's list
-        page_text = self.browser.find_element_by_tag_name('body').text
+        page_text = self.browser.find_element(by=By.TAG_NAME, value='body').text
         self.assertNotIn('Buy peacock feathers!', page_text)
         self.assertIn('Buy milk', page_text)
