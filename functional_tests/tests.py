@@ -20,7 +20,7 @@ class NewVisitorTest(LiveServerTestCase):
         start_time = time.time()
         while True:
             try:
-                table = self.browser.find_element_by_id('id_list_table')
+                table = self.browser.find_element(by=By.ID, value='id_list_table')
                 rows = table.find_elements(by=By.TAG_NAME, value='tr')
                 self.assertIn(row_text, [row.text for row in rows])
                 return
@@ -40,7 +40,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertIn('To-Do', header_text)
 
         # She is invited to enter a to-do item
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.browser.find_element(by=By.ID, value='id_new_item')
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
             'Enter a to-do item'
@@ -49,7 +49,7 @@ class NewVisitorTest(LiveServerTestCase):
         # She types 'Do ironing'
         inputbox.send_keys('Do ironing')
         inputbox.send_keys(Keys.ENTER)
-        
+
         time.sleep(1)
 
         # Then after she pressed enter the page refreshes and new item appears at it
@@ -57,7 +57,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # There is still textbox inviting her to type
         # She types 'Do homework'
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.browser.find_element(by=By.ID, value='id_new_item')
         inputbox.send_keys('Do homework')
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
@@ -69,7 +69,7 @@ class NewVisitorTest(LiveServerTestCase):
     def test_can_start_list_for_multiple_users(self):
         # Jane starts new todo list
         self.browser.get(self.live_server_url)
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.browser.find_element(by=By.ID, value='id_new_item')
         inputbox.send_keys('Buy peacock feathers!')
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_list_table('1: Buy peacock feathers!')
@@ -78,9 +78,9 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertRegex(jane_list_url, r'/lists/.+')
 
         # Now a new user, Francis, comes along to the site
-        
-        ## We use a new browser session to make sure no info
-        ## about Jane come from cookies
+
+        # # We use a new browser session to make sure no info
+        # # about Jane come from cookies
 
         self.browser.quit()
         self.browser = webdriver.Firefox()
@@ -91,7 +91,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotIn('Buy peacock feathers!', page_text)
         self.assertNotIn('Do homework', page_text)
         # Francis start a new list by entering a new item
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.browser.find_element(by=By.ID, value='id_new_item')
         inputbox.send_keys('Buy milk')
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_list_table('1: Buy milk')
