@@ -26,6 +26,7 @@ SECRET_KEY = 'django-insecure-!p-nh!hw(7h%x^evct-=q^ichueu084za+o3^qvtia(wacuwel
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'dev.superlist.site']
+CSRF_TRUSTED_ORIGINS = ['http://dev.superlist.site', 'http://127.0.0.1', 'http://localhost']
 
 
 # Application definition
